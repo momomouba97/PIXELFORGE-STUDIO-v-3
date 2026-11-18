@@ -1,0 +1,75 @@
+name: Build macOS Intel DMG
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    # Intel (x86_64) runner. If this label is unavailable for your account, see README "Build notes".
+    runs-on: macos-15-intel
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Show runner architecture
+        run: |
+          uname -m
+          node -p "process.arch"
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Build UI, Electron main process and DMG (x64)
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: npm run dist
+
+      - name: Verify DMG
+        run: |
+          set -euo pipefail
+          DMG="release/PIXELFORGE-STUDIO-macOS-Intel.dmg"
+          ls -la release
+          test -f "$DMG"
+          SIZE=$(stat -f%z "$DMG")
+          echo "DMG size: $SIZE bytes"
+          test "$SIZE" -gt 0
+          hdiutil verify "$DMG"
+          MNT=$(mktemp -d)
+          hdiutil attach "$DMG" -nobrowse -readonly -mountpoint "$MNT"
+          APP="$MNT/PIXELFORGE STUDIO.app"
+          test -d "$APP"
+          BIN="$APP/Contents/MacOS/PIXELFORGE STUDIO"
+          ARCHS=$(lipo -archs "$BIN")
+          echo "Binary architectures: $ARCHS"
+          echo "$ARCHS" | grep -q x86_64
+          /usr/libexec/PlistBuddy -c "Print :LSMinimumSystemVersion" "$APP/Contents/Info.plist"
+          hdiutil detach "$MNT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PIXELFORGE-STUDIO-macOS-Intel
+          path: release/PIXELFORGE-STUDIO-macOS-Intel.dmg
+          if-no-files-found: error
+
+      - name: Publish GitHub Release (tags only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/PIXELFORGE-STUDIO-macOS-Intel.dmg
+          generate_release_notes: true
