@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root { height: 100%; margin: 0; }
+body { background: #0d0e12; color: #e8eaf0; font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Geeza Pro", Arial, sans-serif; font-size: 13px; overflow: hidden; user-select: none; }
+textarea, input[type="text"], input[type="number"] { user-select: text; }
+input[type="range"] { accent-color: #ff6a3d; width: 100%; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: #2a2e37; border-radius: 6px; }
+button { transition: background-color .15s, color .15s, border-color .15s; }

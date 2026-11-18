@@ -1,0 +1,37 @@
+{
+  "name": "pixelforge-studio",
+  "productName": "PIXELFORGE STUDIO",
+  "version": "0.1.0",
+  "description": "PIXELFORGE STUDIO - professional desktop photo editor (Electron + React)",
+  "author": "PIXELFORGE",
+  "license": "MIT",
+  "private": true,
+  "main": "dist-electron/main.js",
+  "scripts": {
+    "dev": "vite",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.electron.json",
+    "test": "vitest run",
+    "build:ui": "vite build",
+    "build:electron": "tsc -p tsconfig.electron.json",
+    "dist": "npm run build:ui && npm run build:electron && electron-builder --mac dmg --x64 --publish never"
+  },
+  "dependencies": {
+    "lucide-react": "0.468.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.2",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "@vitejs/plugin-react": "4.3.4",
+    "autoprefixer": "10.4.20",
+    "electron": "37.2.4",
+    "electron-builder": "25.1.8",
+    "postcss": "8.4.49",
+    "tailwindcss": "3.4.17",
+    "typescript": "5.6.3",
+    "vite": "5.4.11",
+    "vitest": "2.1.8"
+  }
+}

@@ -1,0 +1,23 @@
+appId: studio.pixelforge.app
+productName: PIXELFORGE STUDIO
+copyright: Copyright (c) PIXELFORGE
+directories:
+  output: release
+files:
+  - dist/**
+  - dist-electron/**
+  - package.json
+mac:
+  category: public.app-category.graphics-design
+  target:
+    - target: dmg
+      arch:
+        - x64
+  minimumSystemVersion: "11.0"
+  identity: null          # unsigned build (no Apple Developer certificate)
+  hardenedRuntime: false
+  gatekeeperAssess: false
+dmg:
+  title: PIXELFORGE STUDIO
+  artifactName: PIXELFORGE-STUDIO-macOS-Intel.${ext}
+  sign: false
